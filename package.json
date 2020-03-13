@@ -1,0 +1,33 @@
+{
+  "name": "persistence-store",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "keywords": [
+    "vue-store",
+    "persistenct"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiaopingbuxiao/persistence-store"
+  },
+  "author": {
+    "email": "1210774823@qq.com",
+    "name": "xiaopingbuxiao"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "vuex": "^3.1.3"
+  },
+  "devDependencies": {
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "files": [
+    "dist"
+  ]
+}
