@@ -101,8 +101,8 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* eslint-disable no-unused-vars */
 
+/* eslint-disable */
 
 let NAME_SPACE;
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -151,36 +151,15 @@ function generateStore(state, actions, mutations) {
 
   Object.keys(state).forEach(key => {
     const value = state[key]
-    computedState[key] = cache.getFromLocalStorage(key) || cache.getFromSessionStorage(key) || value.default
-
-    let refeshCache = () => { }
-
-    switch (value.persistence) {
-      case 'localStorage':
-        cache.saveToLocalStorage(key, computedState[key])
-        refeshCache = (key, value) => {
-          cache.saveToLocalStorage(key, value)
-        }
-        break;
-      case 'sessionStorage':
-        cache.saveToSessionStorage(key, computedState[key])
-
-        refeshCache = (key, value) => {
-          cache.saveToSessionStorage(key, value)
-        }
-        break;
-      default:
-        break;
-    }
-
+    computedState[key] = getFromStorage(window.localStorage, NAME_SPACE, key) || getFromStorage(window.sessionStorage, NAME_SPACE, key) || value.default
     computedMutations[key] = function (storeState, payload) {
       storeState[key] = payload
-      refeshCache(key, payload)
-      typeof mutations[key] === 'function' ? mutations[key].apply(this, arguments) : loop()
+      refeshCache(NAME_SPACE, state[key].persistence, key, payload)
+      typeof mutations[key] === 'function' && mutations[key].apply(this, arguments)
     }
     computedActions[key] = function (context, payload) {
       context.commit(key, payload)
-      typeof actions[key] === 'function' ? actions[key].apply(this, arguments) : loop()
+      typeof actions[key] === 'function' && actions[key].apply(this, arguments)
     }
   })
   return {
@@ -190,21 +169,14 @@ function generateStore(state, actions, mutations) {
   }
 }
 
-
-const cache = {
-  getFromLocalStorage(key) {
-    return getFromStorage(window.localStorage, NAME_SPACE, key)
-  },
-  getFromSessionStorage(key) {
-    return getFromStorage(window.sessionStorage, NAME_SPACE, key)
-  },
-  saveToSessionStorage(key, value) {
-    return saveToStorage(window.sessionStorage, NAME_SPACE, key, value)
-  },
-  saveToLocalStorage(key, value) {
-    return saveToStorage(window.localStorage, NAME_SPACE, key, value)
+function refeshCache(NAME_SPACE, persistence, key, value) {
+  if (persistence === 'localStorage') {
+    saveToStorage(window.localStorage, NAME_SPACE, key, value)
+  } else if (persistence === 'sessionStorage') {
+    saveToStorage(window.sessionStorage, NAME_SPACE, key, value)
   }
 }
+
 
 
 function getFromStorage(storage, namespace, key) {
@@ -227,10 +199,6 @@ function saveToStorage(storage, namespace, key, value) {
 function isObject(obj) {
   return Object.prototype.toString.call(obj) === "[object Object]"
 }
-
-function loop() { }
-
-
 
 /***/ }),
 /* 1 */
